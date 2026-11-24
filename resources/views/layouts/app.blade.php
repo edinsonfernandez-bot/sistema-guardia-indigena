@@ -31,21 +31,16 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
-                         @auth
-                            <li class="nav-item">
-                                 <a class="nav-link fw-semibold" href="{{ route('guardias.index') }}">Guardias (Kiwe Thegnas)</a>
-                             </li>
-                        @endauth
-                    </ul>
-
-                    <ul class="navbar-nav me-auto">
                         @auth
-                         <li class="nav-item">
-                                 <a class="nav-link fw-semibold" href="{{ route('guardias.index') }}">Guardias (Kiwe Thegnas)</a>
-                        </li>
-                        <li class="nav-item">
-                                 <a class="nav-link fw-semibold" href="{{ route('actividades.index') }}">Programación de Actividades</a>
-                         </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold" href="{{ route('guardias.index') }}">Guardias (Kiwe Thegnas)</a>
+                    </li>
+                     <li class="nav-item">
+                         <a class="nav-link fw-semibold" href="{{ route('actividades.index') }}">Programación de Actividades</a>
+                     </li>
+                    <li class="nav-item">
+                         <a class="nav-link fw-semibold" href="{{ route('certificados.index') }}">Certificados</a>
+                    </li>
                         @endauth
                     </ul>
 

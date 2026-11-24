@@ -2,27 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Guardia;
+use App\Models\Actividad;
+use App\Models\Certificado;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
-        return view('home');
+        $totalGuardias = Guardia::count();
+        $guardiasActivos = Guardia::where('estado', 'Activo')->count();
+        $totalActividades = Actividad::count();
+        $totalCertificados = Certificado::count();
+
+        return view('home', compact(
+            'totalGuardias',
+            'guardiasActivos',
+            'totalActividades',
+            'totalCertificados'
+        ));
     }
 }
