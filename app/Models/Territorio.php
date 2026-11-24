@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Territorio extends Model
 {
     use HasFactory;
+    protected $table = 'territorios';
+    protected $fillable = ['nombre', 'zona'];
 }
