@@ -38,6 +38,17 @@
                         @endauth
                     </ul>
 
+                    <ul class="navbar-nav me-auto">
+                        @auth
+                         <li class="nav-item">
+                                 <a class="nav-link fw-semibold" href="{{ route('guardias.index') }}">Guardias (Kiwe Thegnas)</a>
+                        </li>
+                        <li class="nav-item">
+                                 <a class="nav-link fw-semibold" href="{{ route('actividades.index') }}">Programación de Actividades</a>
+                         </li>
+                        @endauth
+                    </ul>
+
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->

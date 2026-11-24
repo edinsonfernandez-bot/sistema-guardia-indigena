@@ -3,83 +3,84 @@
 namespace App\Http\Controllers;
 
 use App\Models\Actividad;
+use App\Models\Territorio;
 use Illuminate\Http\Request;
 
 class ActividadController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function __construct()
     {
-        //
+        $this->middleware('auth');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function index(Request $request)
+    {
+        $busqueda = $request->get('buscar');
+
+        $actividades = Actividad::with('territorio')
+            ->when($busqueda, function ($query, $busqueda) {
+                return $query->where('titulo', 'like', "%{$busqueda}%")
+                    ->orWhere('lugar', 'like', "%{$busqueda}%")
+                    ->orWhere('nivel', 'like', "%{$busqueda}%");
+            })
+            ->orderBy('fecha_inicio', 'desc')
+            ->get();
+
+        return view('actividades.index', compact('actividades', 'busqueda'));
+    }
+
     public function create()
     {
-        //
+        $territorios = Territorio::orderBy('nombre')->get();
+        return view('actividades.create', compact('territorios'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'titulo' => 'required|string|max:150',
+            'descripcion' => 'nullable|string',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+            'lugar' => 'required|string|max:150',
+            'nivel' => 'required|string',
+            'territorio_id' => 'required|exists:territorios,id',
+        ]);
+
+        Actividad::create($request->all());
+
+        return redirect()->route('actividades.index')
+            ->with('success', 'Actividad programada correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Actividad  $actividad
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Actividad $actividad)
+    public function edit(Actividad $actividade)
     {
-        //
+        $territorios = Territorio::orderBy('nombre')->get();
+        return view('actividades.edit', ['actividad' => $actividade, 'territorios' => $territorios]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Actividad  $actividad
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Actividad $actividad)
+    public function update(Request $request, Actividad $actividade)
     {
-        //
+        $request->validate([
+            'titulo' => 'required|string|max:150',
+            'descripcion' => 'nullable|string',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+            'lugar' => 'required|string|max:150',
+            'nivel' => 'required|string',
+            'territorio_id' => 'required|exists:territorios,id',
+        ]);
+
+        $actividade->update($request->all());
+
+        return redirect()->route('actividades.index')
+            ->with('success', 'Actividad actualizada correctamente.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Actividad  $actividad
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Actividad $actividad)
+    public function destroy(Actividad $actividade)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Actividad  $actividad
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Actividad $actividad)
-    {
-        //
+        $actividade->delete();
+        return redirect()->route('actividades.index')
+            ->with('success', 'Actividad eliminada.');
     }
 }
